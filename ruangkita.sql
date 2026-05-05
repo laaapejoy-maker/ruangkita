@@ -32,12 +32,14 @@ CREATE TABLE `bookings` (
   `nama` varchar(100) DEFAULT NULL,
   `prodi` varchar(100) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
+  `ruangan_nama` varchar(100) DEFAULT NULL,
   `checkin` datetime DEFAULT NULL,
   `checkout` datetime DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `angkatan` varchar(10) DEFAULT NULL,
   `kelas` varchar(20) DEFAULT NULL,
-  `keperluan_booking` text DEFAULT NULL
+  `keperluan_booking` text DEFAULT NULL,
+  `status` enum('pending','disetujui','ditolak') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -89,7 +91,8 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `jurusan` varchar(100) NOT NULL,
   `angkatan` year(4) NOT NULL,
-  `kelas` varchar(50) NOT NULL
+  `kelas` varchar(50) NOT NULL,
+  `role` enum('admin','user') NOT NULL DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

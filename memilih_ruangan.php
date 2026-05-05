@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+}
+
 $koneksi = new mysqli("localhost", "root", "", "ruangkita");
 
 if ($koneksi->connect_error) {
@@ -22,7 +27,7 @@ if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
     $_SESSION['ruangan'] = json_decode($_POST['data_ruangan'], true);
 
     if(isset($_SESSION['ruangan']['nama'])){
-        echo "<script>alert('Ruangan dipilih: ".$_SESSION['ruangan']['nama']."');</script>";
+        echo "<script>alert('Ruangan dipilih: ".$_SESSION['ruangan']['nama']."'); window.location.href='proses_booking.php';</script>";
     }
 }
 ?>
@@ -36,68 +41,10 @@ if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<style>
-body {
-    background: linear-gradient(to right, #1e3c72, #ff7e00);
-    font-family: 'Segoe UI', sans-serif;
-}
-
-.header {
-    text-align: center;
-    color: white;
-    margin-bottom: 30px;
-}
-
-.header img {
-    width: 60px;
-}
-
-.header h2 {
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-.room-card {
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 15px;
-    overflow: hidden;
-    border: none;
-}
-
-.room-card:hover {
-    transform: translateY(-5px);
-}
-
-.room-card.active {
-    outline: 3px solid orange;
-}
-
-.room-card img {
-    height: 150px;
-    object-fit: cover;
-}
-
-.detail-card {
-    display: none;
-    border-radius: 20px;
-    animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-    from {opacity: 0; transform: translateY(-10px);}
-    to {opacity: 1; transform: translateY(0);}
-}
-
-.btn-custom {
-    background: linear-gradient(to right, #1e3c72, #ff7e00);
-    color: white;
-    border: none;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="memilih-ruangan-page">
 <div class="container py-4">
 
 <div class="header">

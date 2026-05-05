@@ -1,6 +1,15 @@
 <?php
 session_start();
 
+if (isset($_SESSION['login'])) {
+    if ($_SESSION['role'] === 'admin') {
+        header("Location: admin.php");
+    } else {
+        header("Location: index.php");
+    }
+    exit;
+}
+
 $conn = mysqli_connect("localhost", "root", "", "ruangkita");
 
 $error = "";
@@ -21,8 +30,13 @@ if (isset($_POST["tombol_login"])) {
             $_SESSION['login'] = true;
             $_SESSION['id_user'] = $user['id_user'];
             $_SESSION['nama'] = $user['nama'];
+            $_SESSION['role'] = $user['role'];
 
-            header("Location: dashboard.php"); // ✅ tujuan setelah login
+            if ($user['role'] === 'admin') {
+                header("Location: admin.php");
+            } else {
+                header("Location: index.php");
+            }
             exit;
         }
     }
@@ -39,59 +53,10 @@ if (isset($_POST["tombol_login"])) {
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<style>
-body {
-    height: 100vh;
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-
-    background: linear-gradient(135deg, #2c2f8f, #ff7a00);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.login-card {
-    width: 100%;
-    max-width: 400px;
-    padding: 30px;
-    background: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-
-.input-group-text {
-    background: #f1f1f1;
-    border: none;
-}
-
-.form-control {
-    border: none;
-    background: #f7f7f7;
-}
-
-.form-control:focus {
-    box-shadow: none;
-    background: #f0f0f0;
-}
-
-.btn-login {
-    background: linear-gradient(to right, #2c2f8f, #ff7a00);
-    border: none;
-    color: white;
-    font-weight: 600;
-    padding: 10px;
-    border-radius: 8px;
-    transition: 0.3s;
-}
-
-.btn-login:hover {
-    opacity: 0.9;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="login-page">
 
 <div class="login-card">
     <h3 class="text-center mb-4">Login</h3>

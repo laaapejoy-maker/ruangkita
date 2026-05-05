@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+}
+
 include "koneksi.php";
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -21,18 +28,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     $checkin = $cin_date . " " . $cin_time;
     $checkout = $cout_date . " " . $cout_time;
+    
+    $ruangan_nama = $_SESSION['ruangan']['nama'] ?? '';
+
+    if(!$ruangan_nama) {
+        echo "ruang_kosong"; exit;
+    }
 
     $cek = mysqli_query($conn,"SELECT * FROM bookings 
-        WHERE ('$checkin' < checkout) 
+        WHERE ruangan_nama='$ruangan_nama' AND ('$checkin' < checkout) 
         AND ('$checkout' > checkin)");
 
     if(mysqli_num_rows($cek) > 0){
         echo "bentrok";
     } else {
         mysqli_query($conn,"INSERT INTO bookings
-        (nama,prodi,email,angkatan,kelas,keperluan_booking,checkin,checkout)
+        (nama,prodi,email,ruangan_nama,angkatan,kelas,keperluan_booking,checkin,checkout)
         VALUES
-        ('$nama','$prodi','$email','$angkatan','$kelas','$keperluan','$checkin','$checkout')");
+        ('$nama','$prodi','$email','$ruangan_nama','$angkatan','$kelas','$keperluan','$checkin','$checkout')");
         
         echo "sukses";
     }
@@ -48,111 +61,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-
-body{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(120deg,#0a1f44,#ff7a00);
-}
-
-.main{
-    width:1000px;
-    height:600px;
-    background:white;
-    border-radius:22px;
-    overflow:hidden;
-    display:flex;
-    box-shadow:0 30px 80px rgba(0,0,0,0.4);
-}
-
-/* LEFT */
-.left{
-    width:38%;
-    background:linear-gradient(160deg,#0a1f44,#1b3a73);
-    color:white;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:30px;
-}
-
-.left img{
-    width:90px;
-    margin-bottom:15px;
-}
-
-.left h1{font-size:24px;}
-.left p{font-size:13px;opacity:0.8;}
-
-/* RIGHT */
-.right{
-    width:62%;
-    padding:25px 35px;
-    overflow-y:auto;
-}
-
-.right h2{
-    color:#0a1f44;
-    margin-bottom:15px;
-}
-
-/* GRID */
-.grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-}
-
-.full{grid-column:span 2;}
-
-label{
-    font-size:12px;
-    color:#444;
-}
-
-input, textarea{
-    width:100%;
-    padding:9px;
-    margin-top:4px;
-    border-radius:10px;
-    border:none;
-    font-size:13px;
-    background:#f5f7fb;
-    box-shadow: inset 0 0 0 1px #ddd;
-}
-
-textarea{
-    resize:none;
-    height:70px;
-}
-
-/* BUTTON */
-.btn{
-    margin-top:15px;
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    font-weight:600;
-    color:white;
-    cursor:pointer;
-    background:linear-gradient(135deg,#0a1f44,#ff7a00);
-}
-
-.msg{
-    margin-top:10px;
-    font-size:12px;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="booking-page">
 
 <div class="main">
 
