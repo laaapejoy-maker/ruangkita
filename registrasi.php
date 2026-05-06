@@ -103,7 +103,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="form-group">
             <label>Jurusan</label>
-            <input type="text" name="jurusan" required>
+            <select name="jurusan" required>
+                <option value="">>-- Pilih Jurusan --</option>
+                <option value="PGSD">Pendidikan Guru Sekolah Dasar</option>
+                <option value="PGPAUD">Pendidikan Guru Pendidikan Anak Usia Dini</option>
+                <option value="PSTI">Pendidikan Sistem dan Teknologi Informasi</option>
+                <option value="SISTEL">Sistem Telekomunikasi</option>
+                <option value="MKB">Mekatronika dan Kecerdasan Buatan</option>
+            </select>
         </div>
 
         <div class="form-group">

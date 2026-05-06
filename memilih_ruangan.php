@@ -12,7 +12,25 @@ if ($koneksi->connect_error) {
     die("Koneksi gagal: " . $koneksi->connect_error);
 }
 
-$result = $koneksi->query("SELECT * FROM ruangan");
+
+$kapasitas = isset($_GET['kapasitas']) ? $_GET['kapasitas'] : '';
+$fasilitas = isset($_GET['fasilitas']) ? $_GET['fasilitas'] : '';
+
+
+$query = "SELECT * FROM ruangan WHERE 1=1";
+
+if (!empty($kapasitas)) {
+    $query .= " AND kapasitas >= '$kapasitas'";
+}
+
+
+if ($fasilitas == 'terlengkap') {
+    $query .= " AND LOWER(nama) LIKE '%smart classroom%'";
+} elseif (!empty($fasilitas)) {
+    $query .= " AND LOWER(fasilitas) LIKE LOWER('%$fasilitas%')";
+}
+
+$result = $koneksi->query($query);
 
 if(!$result){
     die("Query error: " . $koneksi->error);
@@ -23,6 +41,7 @@ while($row = $result->fetch_assoc()){
     $ruangan[] = $row;
 }
 
+// pilih ruangan
 if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
     $_SESSION['ruangan'] = json_decode($_POST['data_ruangan'], true);
 
@@ -40,8 +59,38 @@ if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
 <title>RuangKita</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <link rel="stylesheet" href="style.css">
+
+<style>
+.filter-box {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.filter-box input,
+.filter-box select {
+    border-radius: 10px;
+    border: none;
+    padding: 10px;
+}
+
+.btn-cari {
+    background: linear-gradient(135deg, #4f46e5, #f97316);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.btn-cari:hover {
+    opacity: 0.9;
+}
+</style>
+
 </head>
 
 <body class="memilih-ruangan-page">
@@ -51,6 +100,42 @@ if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
     <img src="img/logo.png">
     <h2>RuangKita</h2>
     <p>Sistem Booking Ruangan Modern</p>
+</div>
+
+<div class="filter-box">
+<form method="GET" class="row g-2">
+
+    <div class="col-md-4">
+        <input type="number" name="kapasitas" class="form-control"
+        placeholder="Minimal Kapasitas"
+        value="<?= $kapasitas ?>">
+    </div>
+
+    <div class="col-md-4">
+        <select name="fasilitas" class="form-control">
+            <option value="">Semua Ruangan</option>
+            <option value="terlengkap" <?= $fasilitas=='terlengkap'?'selected':'' ?>>Fasilitas Terlengkap</option>
+
+            <option value="AC" <?= $fasilitas=='AC'?'selected':'' ?>>AC</option>
+            <option value="TV" <?= $fasilitas=='TV'?'selected':'' ?>>TV</option>
+            <option value="Smartboard" <?= $fasilitas=='Smartboard'?'selected':'' ?>>Smartboard</option>
+            <option value="Proyektor" <?= $fasilitas=='Proyektor'?'selected':'' ?>>Proyektor</option>
+            <option value="Whiteboard" <?= $fasilitas=='Whiteboard'?'selected':'' ?>>Whiteboard</option>
+            <option value="Stop Kontak" <?= $fasilitas=='Stop Kontak'?'selected':'' ?>>Stop Kontak</option>
+            <option value="Komputer" <?= $fasilitas=='Komputer'?'selected':'' ?>>Komputer</option>
+            <option value="Internet" <?= $fasilitas=='Internet'?'selected':'' ?>>Internet</option>
+            <option value="Audio" <?= $fasilitas=='Audio'?'selected':'' ?>>Audio</option>
+            <option value="Smart TV" <?= $fasilitas=='Smart TV'?'selected':'' ?>>Smart TV</option>
+            <option value="Kamera" <?= $fasilitas=='Kamera'?'selected':'' ?>>Kamera</option>
+            <option value="Mic Wireless" <?= $fasilitas=='Mic Wireless'?'selected':'' ?>>Mic Wireless</option>
+        </select>
+    </div>
+
+    <div class="col-md-4 d-grid">
+        <button class="btn-cari">Cari Ruangan</button>
+    </div>
+
+</form>
 </div>
 
 <div id="detailCard" class="card detail-card shadow p-3 mb-4">
@@ -77,21 +162,31 @@ if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
 </div>
 
 <div class="row">
-<?php foreach ($ruangan as $r): ?>
-<div class="col-md-4 mb-4">
+<?php if(count($ruangan) > 0): ?>
+    <?php foreach ($ruangan as $r): ?>
 
-<div class="card room-card shadow-sm"
-     onclick='pilihRuangan(this, <?= json_encode($r, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+    <div class="col-md-4 mb-4">
+    <div class="card room-card shadow-sm"
+         onclick='pilihRuangan(this, <?= json_encode($r, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
 
-    <img src="<?= $r['gambar'] ?>">
-    <div class="p-3 text-center">
-        <h6 class="fw-bold mb-1"><?= $r['nama'] ?></h6>
+        <img src="<?= $r['gambar'] ?>">
+        <div class="p-3 text-center">
+            <h6 class="fw-bold mb-1"><?= $r['nama'] ?></h6>
+        </div>
+
+    </div>
     </div>
 
-</div>
+    <?php endforeach; ?>
 
-</div>
-<?php endforeach; ?>
+<?php else: ?>
+
+    <div class="text-center mt-5">
+        <h5 style="color:#6b7280;">Ups! Ruangan tidak tersedia.</h5>
+        <p class="text-muted">Coba ubah filter kapasitas atau fasilitas</p>
+    </div>
+
+<?php endif; ?>
 </div>
 
 </div>
