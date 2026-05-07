@@ -8,47 +8,133 @@ if (!isset($_SESSION['login'])) {
 
 include "koneksi.php";
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $nama = $_POST['nama'] ?? '';
-    $prodi = $_POST['prodi'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $angkatan = $_POST['angkatan'] ?? '';
-    $kelas = $_POST['kelas'] ?? '';
-    $keperluan = $_POST['keperluan_booking'] ?? '';
+    $mode = $_POST['mode'] ?? '';
+
+    $nama = trim($_POST['nama'] ?? '');
+    $prodi = trim($_POST['prodi'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $angkatan = trim($_POST['angkatan'] ?? '');
+    $kelas = trim($_POST['kelas'] ?? '');
+    $keperluan = trim($_POST['keperluan_booking'] ?? '');
 
     $cin_date = $_POST['cin_date'] ?? '';
     $cin_time = $_POST['cin_time'] ?? '';
     $cout_date = $_POST['cout_date'] ?? '';
     $cout_time = $_POST['cout_time'] ?? '';
 
-    if(!$nama || !$prodi || !$email || !$angkatan || !$kelas || !$keperluan || !$cin_date || !$cin_time || !$cout_date || !$cout_time){
-        echo "kosong"; exit;
+ 
+    if (
+        empty($cin_date) ||
+        empty($cin_time) ||
+        empty($cout_date) ||
+        empty($cout_time)
+    ) {
+        echo "kosong";
+        exit;
     }
 
-    $checkin = $cin_date . " " . $cin_time;
-    $checkout = $cout_date . " " . $cout_time;
-    
+
+    $checkin = date("Y-m-d H:i:s", strtotime($cin_date . ' ' . $cin_time));
+    $checkout = date("Y-m-d H:i:s", strtotime($cout_date . ' ' . $cout_time));
+
+
     $ruangan_nama = $_SESSION['ruangan']['nama'] ?? '';
 
-    if(!$ruangan_nama) {
-        echo "ruang_kosong"; exit;
+    if (empty($ruangan_nama)) {
+        echo "ruang_kosong";
+        exit;
     }
 
-    $cek = mysqli_query($conn,"SELECT * FROM bookings 
-        WHERE ruangan_nama='$ruangan_nama' AND ('$checkin' < checkout) 
-        AND ('$checkout' > checkin)");
 
-    if(mysqli_num_rows($cek) > 0){
+    if (strtotime($checkout) <= strtotime($checkin)) {
+        echo "waktu_salah";
+        exit;
+    }
+
+
+    $query = mysqli_query($conn, "
+        SELECT id FROM bookings
+        WHERE ruangan_nama = '$ruangan_nama'
+        AND (
+            checkin < '$checkout'
+            AND
+            checkout > '$checkin'
+        )
+    ");
+
+    if (!$query) {
+        echo "query_error";
+        exit;
+    }
+
+
+    if (mysqli_num_rows($query) > 0) {
         echo "bentrok";
-    } else {
-        mysqli_query($conn,"INSERT INTO bookings
-        (nama,prodi,email,ruangan_nama,angkatan,kelas,keperluan_booking,checkin,checkout)
-        VALUES
-        ('$nama','$prodi','$email','$ruangan_nama','$angkatan','$kelas','$keperluan','$checkin','$checkout')");
-        
-        echo "sukses";
+        exit;
     }
+
+
+    if ($mode == "cek") {
+        echo "tersedia";
+        exit;
+    }
+
+
+    if (
+        empty($nama) ||
+        empty($prodi) ||
+        empty($email) ||
+        empty($angkatan) ||
+        empty($kelas) ||
+        empty($keperluan)
+    ) {
+        echo "kosong";
+        exit;
+    }
+
+    $nama = mysqli_real_escape_string($conn, $nama);
+    $prodi = mysqli_real_escape_string($conn, $prodi);
+    $email = mysqli_real_escape_string($conn, $email);
+    $angkatan = mysqli_real_escape_string($conn, $angkatan);
+    $kelas = mysqli_real_escape_string($conn, $kelas);
+    $keperluan = mysqli_real_escape_string($conn, $keperluan);
+
+
+    $insert = mysqli_query($conn, "
+        INSERT INTO bookings
+        (
+            nama,
+            prodi,
+            email,
+            ruangan_nama,
+            angkatan,
+            kelas,
+            keperluan_booking,
+            checkin,
+            checkout
+        )
+        VALUES
+        (
+            '$nama',
+            '$prodi',
+            '$email',
+            '$ruangan_nama',
+            '$angkatan',
+            '$kelas',
+            '$keperluan',
+            '$checkin',
+            '$checkout'
+        )
+    ");
+
+    if ($insert) {
+        echo "sukses";
+    } else {
+        echo "gagal";
+    }
+
     exit;
 }
 ?>
@@ -60,22 +146,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <title>RuangKita</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body class="booking-page">
 
 <div class="main">
 
-    <!-- LEFT -->
+
     <div class="left">
         <img src="IMG/LOGO.PNG">
         <h1>RuangKita</h1>
         <p>Sistem Booking Ruangan Kampus Modern</p>
     </div>
 
-    <!-- RIGHT -->
     <div class="right">
 
         <h2>Form Booking Ruangan</h2>
@@ -134,7 +219,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         </div>
 
-        <button class="btn" onclick="booking()" id="btnBooking">Booking Sekarang</button>
+        <button class="btn" onclick="booking()" id="btnBooking">
+            Booking Sekarang
+        </button>
+
         <div class="msg" id="msg"></div>
 
     </div>
@@ -142,48 +230,84 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 </div>
 
 <script>
+
 let bentrok = false;
+
 
 function cekJadwal(){
 
+    if(
+        !cin_date.value ||
+        !cin_time.value ||
+        !cout_date.value ||
+        !cout_time.value
+    ){
+        return;
+    }
+
     let fd = new FormData();
-    fd.append("nama","cek");
-    fd.append("prodi","cek");
-    fd.append("email","cek");
-    fd.append("angkatan","cek");
-    fd.append("kelas","cek");
-    fd.append("keperluan_booking","cek");
+
+    fd.append("mode","cek");
 
     fd.append("cin_date",cin_date.value);
     fd.append("cin_time",cin_time.value);
     fd.append("cout_date",cout_date.value);
     fd.append("cout_time",cout_time.value);
 
-    fetch("proses_booking.php",{method:"POST",body:fd})
-    .then(r=>r.text())
-    .then(res=>{
+    fetch("proses_booking.php",{
+        method:"POST",
+        body:fd
+    })
+
+    .then(r => r.text())
+
+    .then(res => {
+
         let msg = document.getElementById("msg");
         let btn = document.getElementById("btnBooking");
 
-        if(res==="bentrok"){
-            msg.innerHTML="❌ Jadwal bentrok";
-            msg.style.color="red";
-            btn.disabled=true;
-            bentrok=true;
-        }else{
-            msg.innerHTML="✅ Jadwal tersedia";
-            msg.style.color="green";
-            btn.disabled=false;
-            bentrok=false;
+        if(res === "bentrok"){
+
+            msg.innerHTML = "❌ Jadwal bentrok";
+            msg.style.color = "red";
+
+            bentrok = true;
+            btn.disabled = true;
+
         }
+        else if(res === "waktu_salah"){
+
+            msg.innerHTML = "❌ Check-out harus setelah check-in";
+            msg.style.color = "red";
+
+            bentrok = true;
+            btn.disabled = true;
+
+        }
+        else if(res === "tersedia"){
+
+            msg.innerHTML = "✅ Jadwal tersedia";
+            msg.style.color = "green";
+
+            bentrok = false;
+            btn.disabled = false;
+
+        }
+
     });
+
 }
 
 function booking(){
 
-    if(bentrok){ alert("Jadwal bentrok!"); return; }
+    if(bentrok === true){
+        alert("Jadwal bentrok!");
+        return;
+    }
 
     let fd = new FormData();
+
+    fd.append("mode","booking");
 
     fd.append("nama",nama.value);
     fd.append("prodi",prodi.value);
@@ -197,20 +321,52 @@ function booking(){
     fd.append("cout_date",cout_date.value);
     fd.append("cout_time",cout_time.value);
 
-    fetch("proses_booking.php",{method:"POST",body:fd})
-    .then(r=>r.text())
-    .then(res=>{
+    fetch("proses_booking.php",{
+        method:"POST",
+        body:fd
+    })
+
+    .then(r => r.text())
+
+    .then(res => {
+
         let msg = document.getElementById("msg");
 
-        if(res==="sukses"){
-            msg.innerHTML="✔ Booking berhasil";
-            msg.style.color="#ff7a00";
-        }else{
-            msg.innerHTML="❌ Gagal booking";
-            msg.style.color="red";
+        if(res === "sukses"){
+
+            msg.innerHTML = "✔ Booking berhasil";
+            msg.style.color = "#ff7a00";
+
         }
+        else if(res === "bentrok"){
+
+            msg.innerHTML = "❌ Jadwal bentrok";
+            msg.style.color = "red";
+
+        }
+        else if(res === "waktu_salah"){
+
+            msg.innerHTML = "❌ Check-out harus setelah check-in";
+            msg.style.color = "red";
+
+        }
+        else if(res === "kosong"){
+
+            msg.innerHTML = "❌ Semua data wajib diisi";
+            msg.style.color = "red";
+
+        }
+        else{
+
+            msg.innerHTML = "❌ Gagal booking";
+            msg.style.color = "red";
+
+        }
+
     });
+
 }
+
 </script>
 
 </body>

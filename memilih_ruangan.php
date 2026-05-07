@@ -84,6 +84,10 @@ if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
     border: none;
     border-radius: 10px;
     font-weight: 600;
+
+    padding: 6px 14px;
+    font-size: 14px;
+    width: auto;
 }
 
 .btn-cari:hover {
@@ -103,15 +107,15 @@ if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
 </div>
 
 <div class="filter-box">
-<form method="GET" class="row g-2">
+<form method="GET" class="row g-2 align-items-end">
 
-    <div class="col-md-4">
+    <div class="col-md-5">
         <input type="number" name="kapasitas" class="form-control"
         placeholder="Minimal Kapasitas"
         value="<?= $kapasitas ?>">
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-5">
         <select name="fasilitas" class="form-control">
             <option value="">Semua Ruangan</option>
             <option value="terlengkap" <?= $fasilitas=='terlengkap'?'selected':'' ?>>Fasilitas Terlengkap</option>
@@ -131,7 +135,7 @@ if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
         </select>
     </div>
 
-    <div class="col-md-4 d-grid">
+    <div class="col-md-2 text-end">
         <button class="btn-cari">Cari Ruangan</button>
     </div>
 
