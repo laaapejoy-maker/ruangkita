@@ -2,6 +2,6 @@
 session_start();
 session_destroy();
 
-header("Location: login.php?logout=success");
+header("Location: index.php?logout=success");
 exit;
 ?>

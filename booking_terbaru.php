@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+}
 $koneksi = new mysqli("localhost", "root", "", "ruangkita");
 
 if ($koneksi->connect_error) {
@@ -11,6 +16,7 @@ $result = $koneksi->query($query);
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Daftar Booking</title>
 
@@ -28,7 +34,7 @@ $result = $koneksi->query($query);
             font-weight: 600;
             padding: 18px 40px;
             background: linear-gradient(135deg, #2c2f8f, #ff7a00);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 
             display: flex;
             align-items: center;
@@ -44,7 +50,7 @@ $result = $koneksi->query($query);
         .wrapper {
             display: flex;
             justify-content: center;
-            padding: 40px 20px; 
+            padding: 40px 20px;
         }
 
         .container {
@@ -53,13 +59,13 @@ $result = $koneksi->query($query);
             background: #ffffff;
             padding: 35px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .container:active {
             transform: scale(0.98) translateY(2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         table {
@@ -115,51 +121,52 @@ $result = $koneksi->query($query);
         .btn-back:hover {
             opacity: 0.85;
         }
-
     </style>
 </head>
 
 <body>
 
-<div class="header">
-    <img src="assets/img/logo.png" class="logo"> Data Booking Terbaru</div>
-
-<div class="wrapper">
-    <div class="container">
-
-        <table>
-            <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th>Prodi</th>
-                <th>Email</th>
-                <th>Check In</th>
-                <th>Check Out</th>
-                <th>Dibuat</th>
-            </tr>
-
-            <?php
-            $no = 1;
-            while($row = $result->fetch_assoc()){
-            ?>
-            <tr>
-                <td><?= $no++ ?></td>
-                <td><?= $row['nama'] ?></td>
-                <td><?= $row['prodi'] ?></td>
-                <td><?= $row['email'] ?></td>
-                <td><span class="badge"><?= $row['checkin'] ?></span></td>
-                <td><span class="badge"><?= $row['checkout'] ?></span></td>
-                <td><?= $row['created_at'] ?></td>
-            </tr>
-            <?php } ?>
-        </table>
-
-        <div class="back-wrapper">
-            <a href="dashboard.php" class="btn-back">← Kembali</a>
-        </div>
-
+    <div class="header">
+        <img src="assets/img/logo.png" class="logo"> Data Booking Terbaru
     </div>
-</div>
+
+    <div class="wrapper">
+        <div class="container">
+
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Prodi</th>
+                    <th>Email</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Dibuat</th>
+                </tr>
+
+                <?php
+                $no = 1;
+                while ($row = $result->fetch_assoc()) {
+                ?>
+                    <tr>
+                        <td><?= $no++ ?></td>
+                        <td><?= $row['nama'] ?></td>
+                        <td><?= $row['prodi'] ?></td>
+                        <td><?= $row['email'] ?></td>
+                        <td><span class="badge"><?= $row['checkin'] ?></span></td>
+                        <td><span class="badge"><?= $row['checkout'] ?></span></td>
+                        <td><?= $row['created_at'] ?></td>
+                    </tr>
+                <?php } ?>
+            </table>
+
+            <div class="back-wrapper">
+                <a href="admin_dashboard.php" class="btn-back">← Kembali</a>
+            </div>
+
+        </div>
+    </div>
 
 </body>
+
 </html>

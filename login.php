@@ -3,9 +3,9 @@ session_start();
 
 if (isset($_SESSION['login'])) {
     if ($_SESSION['role'] === 'admin') {
-        header("Location: admin.php");
+        header("Location: admin_dashboard.php");
     } else {
-        header("Location: index.php");
+        header("Location: user_dashboard.php");
     }
     exit;
 }
@@ -33,9 +33,9 @@ if (isset($_POST["tombol_login"])) {
             $_SESSION['role'] = $user['role'];
 
             if ($user['role'] === 'admin') {
-                header("Location: admin.php");
+                header("Location: admin_dashboard.php");
             } else {
-                header("Location: index.php");
+                header("Location: user_dashboard.php");
             }
             exit;
         }

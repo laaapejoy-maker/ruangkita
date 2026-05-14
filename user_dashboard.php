@@ -1,7 +1,7 @@
 <?php
 session_start();
-if (isset($_SESSION['login'])) {
-    header("Location: user_dashboard.php");
+if (!isset($_SESSION['login'])) {
+    header("Location: index.php");
     exit;
 }
 ?>
@@ -149,147 +149,7 @@ if (isset($_SESSION['login'])) {
     </div>
   </section>
 
-  <!-- FITUR -->
-  <section id="fitur" class="features-bg">
-    <div class="container">
-      <div class="features-header reveal">
-        <span class="section-label">Fitur Unggulan</span>
-        <h2 class="section-title">Semua yang Kamu Butuhkan</h2>
-        <p class="section-sub">Dirancang untuk memudahkan seluruh proses peminjaman ruang dari awal hingga akhir.</p>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card reveal">
-          <div class="feature-icon fi-blue">📅</div>
-          <h3>Booking Ruang Online</h3>
-          <p>Ajukan peminjaman ruang kapan saja dan di mana saja hanya dalam beberapa klik tanpa perlu antri atau datang langsung ke admin.</p>
-        </div>
-        <div class="feature-card reveal" style="transition-delay:0.1s">
-          <div class="feature-icon fi-orange">⚡</div>
-          <h3>Cek Ketersediaan Real-Time</h3>
-          <p>Lihat status ketersediaan ruang secara langsung dan real-time sehingga tidak ada booking ganda atau bentrok jadwal.</p>
-        </div>
-        <div class="feature-card reveal" style="transition-delay:0.2s">
-          <div class="feature-icon fi-green">🔔</div>
-          <h3>Notifikasi Status Booking</h3>
-          <p>Dapatkan pemberitahuan instan saat booking kamu diproses, disetujui, atau ditolak oleh pihak akademik melalui email & dashboard.</p>
-        </div>
-        <div class="feature-card reveal" style="transition-delay:0.3s">
-          <div class="feature-icon fi-purple">✅</div>
-          <h3>Approval oleh Staff Akademik</h3>
-          <p>Alur persetujuan yang terstruktur memastikan setiap penggunaan ruang tercatat dan terotorisasi oleh pejabat berwenang.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CARA KERJA -->
-  <section id="cara-kerja">
-    <div class="container">
-      <div class="steps-header reveal">
-        <span class="section-label">Cara Kerja</span>
-        <h2 class="section-title">Mudah dalam 4 Langkah</h2>
-        <p class="section-sub">Proses booking yang simpel dan transparan agar kamu bisa fokus pada kegiatan utama.</p>
-      </div>
-      <div class="steps-track">
-        <div class="step-item reveal">
-          <div class="step-circle">
-            <div class="step-num">1</div>
-          </div>
-          <div class="step-title">Login / Register</div>
-          <div class="step-desc">Buat akun atau masuk menggunakan akun kampus kamu dengan aman dan mudah.</div>
-        </div>
-        <div class="step-item reveal" style="transition-delay:0.1s">
-          <div class="step-circle">
-            <div class="step-num">2</div>
-          </div>
-          <div class="step-title">Pilih Ruang & Jadwal</div>
-          <div class="step-desc">Cari ruang yang tersedia sesuai kapasitas, fasilitas, dan waktu yang kamu butuhkan.</div>
-        </div>
-        <div class="step-item reveal" style="transition-delay:0.2s">
-          <div class="step-circle">
-            <div class="step-num">3</div>
-          </div>
-          <div class="step-title">Ajukan Booking</div>
-          <div class="step-desc">Isi formulir pengajuan dengan detail kegiatan dan kirimkan permohonan kamu.</div>
-        </div>
-        <div class="step-item reveal" style="transition-delay:0.3s">
-          <div class="step-circle">
-            <div class="step-num">4</div>
-          </div>
-          <div class="step-title">Tunggu Approval</div>
-          <div class="step-desc">Staff akademik memverifikasi dan notifikasi persetujuan akan langsung dikirimkan ke kamu.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- KEUNGGULAN -->
-  <section class="adv-bg" style="padding: 6rem 2rem;">
-    <div class="container">
-      <div class="adv-inner">
-        <div class="adv-left reveal">
-          <span class="section-label">Keunggulan</span>
-          <h2 class="section-title">Kenapa Pilih RuangKita?</h2>
-          <p class="section-sub">Platform yang dibangun khusus untuk kebutuhan lingkungan akademik dengan mengutamakan kemudahan dan transparansi.</p>
-          <div class="adv-list">
-            <div class="adv-item">
-              <div class="adv-check">✓</div>
-              <div class="adv-text">
-                <h4>Mengurangi Bentrok Jadwal</h4>
-                <p>Sistem otomatis mencegah booking ganda pada ruang dan waktu yang sama secara real-time.</p>
-              </div>
-            </div>
-            <div class="adv-item">
-              <div class="adv-check">✓</div>
-              <div class="adv-text">
-                <h4>Efisiensi Waktu</h4>
-                <p>Proses yang sebelumnya membutuhkan waktu berhari-hari kini bisa selesai dalam hitungan menit.</p>
-              </div>
-            </div>
-            <div class="adv-item">
-              <div class="adv-check">✓</div>
-              <div class="adv-text">
-                <h4>Transparansi Penggunaan Ruang</h4>
-                <p>Semua riwayat dan status peminjaman dapat diakses dan dipantau oleh seluruh pihak terkait.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="adv-right reveal" style="transition-delay:0.15s">
-          <div class="adv-stat-card">
-            <div class="big">50+</div>
-            <div class="label">Ruang Tersedia</div>
-          </div>
-          <div class="adv-stat-card">
-            <div class="big">2K+</div>
-            <div class="label">Pengguna Terdaftar</div>
-          </div>
-          <div class="adv-stat-card">
-            <div class="big">98%</div>
-            <div class="label">Kepuasan Pengguna</div>
-          </div>
-          <div class="adv-stat-card">
-            <div class="big">0</div>
-            <div class="label">Bentrok Jadwal</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-section" id="kontak">
-    <div class="cta-box reveal">
-      <h2>Mulai gunakan RuangKita sekarang</h2>
-      <p>Bergabunglah bersama ribuan mahasiswa dan dosen yang telah merasakan kemudahan booking ruang kampus secara digital.</p>
-      <a href="registrasi.php" class="btn-orange">
-        Daftar Sekarang
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </a>
-    </div>
-  </section>
+ 
 
   <!-- FOOTER -->
   <footer>

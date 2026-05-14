@@ -1,4 +1,11 @@
-<?php include "koneksi.php"; ?>
+<?php 
+session_start();
+if (!isset($_SESSION['login'])) {
+    header("Location: index.php");
+    exit;
+}
+include "koneksi.php"; 
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -195,7 +202,7 @@ body::before{
     </div>
 
     <div class="nav">
-        <a href="index.php">📋 Booking Ruangan</a>
+        <a href="user_dashboard.php">📋 Booking Ruangan</a>
         <a href="kalender.php">📅 Jadwal Kalender</a>
         <a href="#">📊 Statistik</a>
     </div>
@@ -279,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         dateClick: function(info){
-            window.location.href = "index.php?date=" + info.dateStr;
+            window.location.href = "user_dashboard.php?date=" + info.dateStr;
         }
 
     });
