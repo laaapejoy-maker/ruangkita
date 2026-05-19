@@ -19,7 +19,6 @@ if (isset($_SESSION['login'])) {
 
 <body class="landing-page">
 
-  <!-- NAVBAR -->
   <nav id="navbar">
     <div class="nav-inner">
       <a href="#" class="logo">
@@ -65,7 +64,6 @@ if (isset($_SESSION['login'])) {
     <?php endif; ?>
   </div>
 
-  <!-- HERO -->
   <section id="home" style="padding: 0;">
     <div class="hero">
       <div class="hero-content">
@@ -149,7 +147,6 @@ if (isset($_SESSION['login'])) {
     </div>
   </section>
 
-  <!-- FITUR -->
   <section id="fitur" class="features-bg">
     <div class="container">
       <div class="features-header reveal">
@@ -182,7 +179,6 @@ if (isset($_SESSION['login'])) {
     </div>
   </section>
 
-  <!-- CARA KERJA -->
   <section id="cara-kerja">
     <div class="container">
       <div class="steps-header reveal">
@@ -223,7 +219,6 @@ if (isset($_SESSION['login'])) {
     </div>
   </section>
 
-  <!-- KEUNGGULAN -->
   <section class="adv-bg" style="padding: 6rem 2rem;">
     <div class="container">
       <div class="adv-inner">
@@ -277,7 +272,6 @@ if (isset($_SESSION['login'])) {
     </div>
   </section>
 
-  <!-- CTA -->
   <section class="cta-section" id="kontak">
     <div class="cta-box reveal">
       <h2>Mulai gunakan RuangKita sekarang</h2>
@@ -291,7 +285,6 @@ if (isset($_SESSION['login'])) {
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
       <div class="footer-brand">
@@ -328,17 +321,14 @@ if (isset($_SESSION['login'])) {
   </footer>
 
   <script>
-    // Navbar scroll shadow
     window.addEventListener('scroll', () => {
       document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
     });
 
-    // Mobile menu
     function toggleMenu() {
       document.getElementById('mobileMenu').classList.toggle('open');
     }
 
-    // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {

@@ -1,6 +1,4 @@
-/* =========================================
-   GLOBAL VARIABLES & RESET
-   ========================================= */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -36,9 +34,7 @@ body {
   overflow-x: hidden;
 }
 
-/* =========================================
-   1. LANDING PAGE (index.php)
-   ========================================= */
+
 .landing-page nav {
   position: sticky;
   top: 0;
@@ -539,9 +535,6 @@ body {
 .landing-page .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s, transform 0.6s; }
 .landing-page .reveal.visible { opacity: 1; transform: none; }
 
-/* =========================================
-   2. LOGIN PAGE (login.php)
-   ========================================= */
 .login-page {
   height: 100vh;
   margin: 0;
@@ -584,9 +577,6 @@ body {
   opacity: 0.9;
 }
 
-/* =========================================
-   3. REGISTER PAGE (registrasi.php)
-   ========================================= */
 .register-page {
   min-height: 100vh;
   display: flex;
@@ -640,9 +630,6 @@ body {
 .register-page .error { background: #ffe5e5; color: #cc0000; }
 .register-page .success { background: #e6ffea; color: #1a7f37; }
 
-/* =========================================
-   4. MEMILIH RUANGAN (memilih_ruangan.php)
-   ========================================= */
 .memilih-ruangan-page {
   background: linear-gradient(to right, #1e3c72, #ff7e00);
   font-family: 'Segoe UI', sans-serif;
@@ -684,9 +671,6 @@ body {
   opacity: 0.9;
 }
 
-/* =========================================
-   5. PROSES BOOKING (proses_booking.php)
-   ========================================= */
 .booking-page {
   height: 100vh;
   display: flex;
