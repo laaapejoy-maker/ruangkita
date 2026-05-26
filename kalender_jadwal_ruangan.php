@@ -1,11 +1,16 @@
 <?php 
 session_start();
+
 if (!isset($_SESSION['login'])) {
     header("Location: index.php");
     exit;
 }
+
 include "koneksi.php"; 
+
+$current_page = basename($_SERVER['PHP_SELF']);
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -17,7 +22,10 @@ include "koneksi.php";
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
+<link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
 <style>
+
 *{
     margin:0;
     padding:0;
@@ -29,110 +37,185 @@ body{
     height:100vh;
     display:flex;
     overflow:hidden;
-    background:linear-gradient(135deg,#0a1f44 0%, #ff7a00 45%, #ffffff 100%);
-}
-
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
     background:
-        radial-gradient(circle at 20% 20%, rgba(255,122,0,0.25), transparent 40%),
-        radial-gradient(circle at 80% 30%, rgba(10,31,68,0.35), transparent 45%),
-        radial-gradient(circle at 50% 80%, rgba(255,255,255,0.4), transparent 50%);
-    z-index:0;
+    linear-gradient(
+        180deg,
+        #f8fbff,
+        #eef4ff
+    );
 }
 
 .sidebar{
-    width:240px;
-    padding:25px 20px;
-    display:flex;
-    flex-direction:column;
-    position:relative;
-    z-index:1;
+    width:295px;
+    background:#ffffff;
+    padding:24px 18px;
+    border-right:1px solid #e5e7eb;
+    position:fixed;
+    left:0;
+    top:0;
+    height:100vh;
+    z-index:999;
+    transition:0.3s ease;
+    overflow-y:auto;
+    transform:translateX(0);
+}
+
+.sidebar.closed{
+    transform:translateX(-100%);
+}
+
+.sidebar-toggle{
+    position:fixed;
+    top:18px;
+    left:18px;
+    z-index:1001;
+    width:52px;
+    height:52px;
+    border:none;
+    border-radius:18px;
+    background:linear-gradient(
+      135deg,
+      #2563eb,
+      #3b82f6
+    );
     color:white;
-    overflow:hidden;
-
-    background:linear-gradient(135deg,#0a1f44 0%, #1b3a73 40%, #ff7a00 120%);
-    background-size:200% 200%;
-    animation:sidebarFlow 9s ease infinite;
-
-    border-right:1px solid rgba(255,255,255,0.15);
-}
-
-@keyframes sidebarFlow{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
-
-.sidebar::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:rgba(0,0,0,0.25);
-    backdrop-filter:blur(10px);
-    z-index:0;
-}
-
-.sidebar *{
-    position:relative;
-    z-index:1;
-}
-
-.logo{
+    font-size:26px;
+    cursor:pointer;
     display:flex;
     align-items:center;
-    gap:10px;
-    font-size:22px;
-    font-weight:700;
-    margin-bottom:25px;
-    letter-spacing:1px;
+    justify-content:center;
+    box-shadow:
+      0 12px 28px rgba(37,99,235,0.25);
 }
 
-.logo img{
-    width:34px;
-    height:34px;
+.sidebar-logo{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    margin-bottom:28px;
+    padding-left:55px;
+}
+
+.sidebar-logo img{
+    width:48px;
+    height:48px;
     object-fit:contain;
-    border-radius:6px;
+    border-radius:14px;
+    position:relative;
+    top:-5px;
 }
 
-.nav a{
-    display:block;
-    padding:12px;
-    margin-bottom:10px;
-    border-radius:10px;
+.sidebar-logo h2{
+    font-size:20px;
+    color:#111827;
+    margin:0;
+    font-weight:800;
+}
+
+.sidebar-logo p{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:0;
+}
+
+.profile-box{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    padding:18px;
+    border-radius:20px;
+    margin-bottom:30px;
+}
+
+.profile-name{
+    font-size:15px;
+    font-weight:700;
+    color:#111827;
+}
+
+.profile-email{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:5px;
+    word-break:break-word;
+}
+
+.sidebar-menu{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.sidebar-menu a{
     text-decoration:none;
-    color:white;
-    font-size:14px;
-    background:rgba(255,255,255,0.08);
-    transition:0.25s;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:15px 17px;
+    border-radius:18px;
+    color:#374151;
+    font-weight:600;
+    font-size:15px;
+    transition:all 0.25s ease;
 }
 
-.nav a:hover{
-    background:rgba(255,255,255,0.2);
+.sidebar-menu a:hover{
     transform:translateX(5px);
+    color:#2563eb;
+}
+
+.sidebar-menu a.active{
+    background:linear-gradient(
+      135deg,
+      #2563eb,
+      #3b82f6
+    );
+    color:white;
+    box-shadow:
+      0 12px 28px rgba(37,99,235,0.28);
+}
+
+.sidebar-menu a i{
+    font-size:22px;
+}
+
+.sidebar-bottom{
+    margin-top:20px;
+    padding-top:20px;
+    border-top:1px solid #e5e7eb;
+}
+
+.sidebar-bottom .sidebar-menu a{
+    color:#dc2626;
 }
 
 .main{
     flex:1;
     display:flex;
     flex-direction:column;
+    margin-left:295px;
+    position:relative;
+    z-index:1;
+    transition:0.3s ease;
 }
 
+.main.full{
+    margin-left:0;
+}
 
 .header{
-    height:65px;
+    height:70px;
     display:flex;
     align-items:center;
     justify-content:space-between;
     padding:0 25px;
 
-    background:linear-gradient(90deg,#0a1f44,#ff7a00,#ffffff);
-    background-size:200% 200%;
-    animation:glowMove 8s ease infinite;
+    background:white;
 
-    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+    border-bottom:1px solid #dbeafe;
+
+    box-shadow:
+    0 4px 20px rgba(37,99,235,0.08);
+
     position:relative;
 }
 
@@ -143,14 +226,15 @@ body::before{
 }
 
 .title{
-    font-size:18px;
-    font-weight:700;
-    color:white;
+    font-size:20px;
+    font-weight:800;
+    color:#1e3a8a;
 }
 
 .clock{
     font-size:13px;
-    color:white;
+    color:#64748b;
+    font-weight:600;
 }
 
 .calendar-wrapper{
@@ -173,6 +257,7 @@ body::before{
     font-size:12px;
     border-radius:6px;
     display:none;
+    z-index:9999;
 }
 
 .modal{
@@ -182,6 +267,7 @@ body::before{
     display:none;
     justify-content:center;
     align-items:center;
+    z-index:9999;
 }
 
 .modal-box{
@@ -190,58 +276,157 @@ body::before{
     border-radius:12px;
     width:320px;
 }
+
+.modal-box span{
+    cursor:pointer;
+    float:right;
+}
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:280px;
+    }
+
+    .main{
+        margin-left:0;
+    }
+
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="sidebar">
-    <div class="logo">
-        <img src="img/logo.png" alt="Logo RuangKita">
-        <span>RuangKita</span>
+<button class="sidebar-toggle"
+        onclick="toggleSidebar()">
+  ☰
+</button>
+
+<div class="sidebar" id="sidebar">
+
+    <div class="sidebar-logo">
+
+        <img src="img/logo.png" alt="Logo">
+
+        <div>
+            <h2>RuangKita</h2>
+            <p>User Panel</p>
+        </div>
+
     </div>
 
-    <div class="nav">
-        <a href="user_dashboard.php">📋 Booking Ruangan</a>
-        <a href="kalender.php">📅 Jadwal Kalender</a>
-        <a href="#">📊 Statistik</a>
+    <div class="profile-box">
+
+        <div class="profile-name">
+            <?= $_SESSION['nama']; ?>
+        </div>
+
+        <div class="profile-email">
+            <?= $_SESSION['email'] ?? ''; ?>
+        </div>
+
     </div>
+
+    <div class="sidebar-menu">
+
+        <a href="user_dashboard.php">
+            <i class="ri-dashboard-3-fill"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="memilih_ruangan.php">
+            <i class="ri-calendar-schedule-fill"></i>
+            <span>Booking Ruangan</span>
+        </a>
+
+        <a href="kalender.php" class="active">
+            <i class="ri-calendar-check-fill"></i>
+            <span>Kalender</span>
+        </a>
+
+    </div>
+
+    <div class="sidebar-bottom">
+
+        <div class="sidebar-menu">
+
+            <a href="logout.php">
+                <i class="ri-logout-circle-r-fill"></i>
+                <span>Logout</span>
+            </a>
+
+        </div>
+
+    </div>
+
 </div>
 
-<div class="main">
+<div class="main" id="main">
+
     <div class="header">
-        <div class="title">Jadwal Ruangan</div>
+
+        <div class="title">
+            Jadwal Ruangan
+        </div>
+
         <div class="clock" id="clock"></div>
+
     </div>
 
     <div class="calendar-wrapper">
         <div id="calendar"></div>
     </div>
+
 </div>
 
 <div class="tooltip" id="tooltip"></div>
 
 <div class="modal" id="modal">
+
     <div class="modal-box">
+
         <span onclick="tutupModal()">✖</span>
+
         <h3>Detail Booking</h3>
+
         <p id="detail"></p>
+
     </div>
+
 </div>
 
 <script>
+
+const sidebar = document.getElementById('sidebar');
+const main = document.getElementById('main');
+
+function toggleSidebar(){
+
+    sidebar.classList.toggle('closed');
+    main.classList.toggle('full');
+
+}
+
 setInterval(()=>{
+
     document.getElementById("clock").innerHTML =
         new Date().toLocaleString();
+
 },1000);
 
 function bukaModal(text){
+
     document.getElementById("detail").innerText = text;
     document.getElementById("modal").style.display="flex";
+
 }
 
 function tutupModal(){
+
     document.getElementById("modal").style.display="none";
+
 }
 
 let tooltip = document.getElementById("tooltip");
@@ -261,38 +446,53 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         eventDidMount: function(info){
+
             info.el.addEventListener("mouseenter", function(){
+
                 tooltip.style.display = "block";
                 tooltip.innerHTML = info.event.title;
+
             });
 
             info.el.addEventListener("mousemove", function(e){
+
                 tooltip.style.top = e.pageY + 10 + "px";
                 tooltip.style.left = e.pageX + 10 + "px";
+
             });
 
             info.el.addEventListener("mouseleave", function(){
+
                 tooltip.style.display = "none";
+
             });
+
         },
 
         eventClick: function(info){
+
             let text =
                 "📌 " + info.event.title +
                 "\n\n🕒 Mulai: " + info.event.start.toLocaleString() +
                 "\n🕒 Selesai: " + info.event.end.toLocaleString();
 
             bukaModal(text);
+
         },
 
         dateClick: function(info){
-            window.location.href = "user_dashboard.php?date=" + info.dateStr;
+
+            window.location.href =
+            "user_dashboard.php?date=" + info.dateStr;
+
         }
 
     });
 
     calendar.render();
+
 });
+
 </script>
 
 </body>
