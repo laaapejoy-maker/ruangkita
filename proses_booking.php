@@ -344,7 +344,12 @@ function booking(){
 
     if(bentrok === true){
 
-        alert("Data booking tidak valid!");
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: 'Data booking tidak valid!',
+            confirmButtonColor: '#3085d6'
+        });
         return;
     }
 
@@ -393,7 +398,7 @@ function booking(){
 }
 
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
 

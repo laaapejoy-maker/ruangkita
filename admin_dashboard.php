@@ -137,23 +137,60 @@ $top_ruangan = mysqli_query($conn,"
     LIMIT 5
 ");
 
+$limit = 5;
+$hal = isset($_GET['hal']) ? (int)$_GET['hal'] : 1;
+$offset = ($hal - 1) * $limit;
+$search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
+// For Booking Pending
+$where_booking = "WHERE status='pending'";
+if($search != ''){
+    $where_booking .= " AND (nama LIKE '%$search%' OR ruangan_nama LIKE '%$search%')";
+}
+$query_booking_count = mysqli_query($conn, "SELECT COUNT(*) as total FROM bookings $where_booking");
+$total_booking = mysqli_fetch_assoc($query_booking_count)['total'];
+$pages_booking = ceil($total_booking / $limit);
+
 $booking_pending = mysqli_query($conn,"
     SELECT *
     FROM bookings
-    WHERE status='pending'
+    $where_booking
     ORDER BY created_at DESC
+    LIMIT $offset, $limit
 ");
+
+// For Riwayat
+$where_riwayat = "WHERE 1=1";
+if($search != ''){
+    $where_riwayat .= " AND (nama LIKE '%$search%' OR ruangan_nama LIKE '%$search%')";
+}
+$query_riwayat_count = mysqli_query($conn, "SELECT COUNT(*) as total FROM bookings $where_riwayat");
+$total_riwayat = mysqli_fetch_assoc($query_riwayat_count)['total'];
+$pages_riwayat = ceil($total_riwayat / $limit);
 
 $riwayat = mysqli_query($conn,"
     SELECT *
     FROM bookings
+    $where_riwayat
     ORDER BY created_at DESC
+    LIMIT $offset, $limit
 ");
+
+// For Data Ruangan
+$where_ruangan = "WHERE 1=1";
+if($search != ''){
+    $where_ruangan .= " AND (nama LIKE '%$search%' OR fasilitas LIKE '%$search%')";
+}
+$query_ruangan_count = mysqli_query($conn, "SELECT COUNT(*) as total FROM ruangan $where_ruangan");
+$total_ruangan = mysqli_fetch_assoc($query_ruangan_count)['total'];
+$pages_ruangan = ceil($total_ruangan / $limit);
 
 $data_ruangan = mysqli_query($conn,"
     SELECT *
     FROM ruangan
+    $where_ruangan
     ORDER BY id DESC
+    LIMIT $offset, $limit
 ");
 
 ?>
@@ -677,6 +714,55 @@ td{
     font-weight:700;
 }
 
+.search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+.search-bar form {
+    display: flex;
+    gap: 10px;
+}
+.search-bar input {
+    padding: 10px 15px;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    outline: none;
+    font-size: 14px;
+}
+.search-bar button {
+    background: linear-gradient(135deg,#2563eb,#60a5fa);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+}
+.pagination a {
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #374151;
+    font-weight: 700;
+    transition: 0.3s;
+}
+.pagination a:hover {
+    background: #e2e8f0;
+}
+.pagination a.active {
+    background: #2563eb;
+    color: white;
+}
+
 @media(max-width:900px){
 
     .sidebar{
@@ -933,12 +1019,19 @@ td{
 
                 <h2>Data Ruangan</h2>
 
-                <a href="?page=ruangan&tambah=1"
-                   class="btn-tambah">
-
-                    + Tambah Ruangan
-
-                </a>
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <div class="search-bar" style="margin-bottom:0;">
+                        <form method="GET" action="">
+                            <input type="hidden" name="page" value="ruangan">
+                            <input type="text" name="search" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" placeholder="Cari ruangan...">
+                            <button type="submit">Cari</button>
+                        </form>
+                    </div>
+                    <a href="?page=ruangan&tambah=1"
+                       class="btn-tambah">
+                        + Tambah Ruangan
+                    </a>
+                </div>
 
             </div>
 
@@ -1099,6 +1192,14 @@ td{
 
             </div>
 
+            <?php if($pages_ruangan > 1){ ?>
+            <div class="pagination">
+                <?php for($i=1; $i<=$pages_ruangan; $i++){ ?>
+                    <a href="?page=ruangan&hal=<?= $i; ?>&search=<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" class="<?= $hal == $i ? 'active' : ''; ?>"><?= $i; ?></a>
+                <?php } ?>
+            </div>
+            <?php } ?>
+
             <?php } ?>
 
 
@@ -1107,8 +1208,15 @@ td{
 
             <div class="table-box">
 
-                <div class="table-header">
+                <div class="table-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                     <h2>Booking Pending</h2>
+                    <div class="search-bar" style="margin-bottom:0;">
+                        <form method="GET" action="">
+                            <input type="hidden" name="page" value="booking">
+                            <input type="text" name="search" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" placeholder="Cari nama atau ruangan...">
+                            <button type="submit">Cari</button>
+                        </form>
+                    </div>
                 </div>
 
                 <table>
@@ -1176,6 +1284,14 @@ td{
 
                 </table>
 
+                <?php if($pages_booking > 1){ ?>
+                <div class="pagination">
+                    <?php for($i=1; $i<=$pages_booking; $i++){ ?>
+                        <a href="?page=booking&hal=<?= $i; ?>&search=<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" class="<?= $hal == $i ? 'active' : ''; ?>"><?= $i; ?></a>
+                    <?php } ?>
+                </div>
+                <?php } ?>
+
             </div>
 
             <?php } ?>
@@ -1186,8 +1302,15 @@ td{
 
             <div class="table-box">
 
-                <div class="table-header">
+                <div class="table-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                     <h2>Riwayat Booking</h2>
+                    <div class="search-bar" style="margin-bottom:0;">
+                        <form method="GET" action="">
+                            <input type="hidden" name="page" value="riwayat">
+                            <input type="text" name="search" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" placeholder="Cari nama atau ruangan...">
+                            <button type="submit">Cari</button>
+                        </form>
+                    </div>
                 </div>
 
                 <table>
@@ -1235,6 +1358,14 @@ td{
                     </tbody>
 
                 </table>
+
+                <?php if($pages_riwayat > 1){ ?>
+                <div class="pagination">
+                    <?php for($i=1; $i<=$pages_riwayat; $i++){ ?>
+                        <a href="?page=riwayat&hal=<?= $i; ?>&search=<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" class="<?= $hal == $i ? 'active' : ''; ?>"><?= $i; ?></a>
+                    <?php } ?>
+                </div>
+                <?php } ?>
 
             </div>
 

@@ -61,11 +61,7 @@ if (isset($_POST["tombol_login"])) {
 <div class="login-card">
     <h3 class="text-center mb-4">Login</h3>
 
-    <?php if ($error): ?>
-        <div class="alert alert-danger text-center">
-            <?= $error; ?>
-        </div>
-    <?php endif; ?>
+
 
     <form method="POST">
         <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
@@ -81,6 +77,16 @@ if (isset($_POST["tombol_login"])) {
         </p>
     </form>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if ($error): ?>
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Login Gagal',
+        text: '<?= $error; ?>',
+        confirmButtonColor: '#3085d6'
+    });
+</script>
+<?php endif; ?>
 </body>
 </html>

@@ -1,5 +1,7 @@
 <?php
 session_start();
+include "koneksi.php";
+
 if (isset($_SESSION['login'])) {
     header("Location: user_dashboard.php");
     exit;
@@ -104,34 +106,77 @@ if (isset($_SESSION['login'])) {
       <div class="hero-card-main">
         <p class="card-title">Ketersediaan Ruang — Hari Ini</p>
         <div class="room-grid">
-          <div class="room-slot available">
-            <div class="slot-name">Aula Utama</div>
-            <div class="slot-time">09.00 – 12.00</div>
-            ✓ Tersedia
+          <?php
+          $today = date('Y-m-d');
+          $query_rooms = mysqli_query($conn, "SELECT nama FROM ruangan LIMIT 4");
+          while($room = mysqli_fetch_assoc($query_rooms)){
+              $nama_ruangan = $room['nama'];
+              $cek_booking = mysqli_query($conn, "
+                  SELECT checkin, checkout, status 
+                  FROM bookings 
+                  WHERE ruangan_nama = '$nama_ruangan' 
+                  AND DATE(checkin) = '$today' 
+                  ORDER BY checkin ASC LIMIT 1
+              ");
+              
+              $status_class = "available";
+              $status_text = "✓ Tersedia";
+              $time_text = "08:00 - 18:00"; 
+              
+              if(mysqli_num_rows($cek_booking) > 0){
+                  $booking = mysqli_fetch_assoc($cek_booking);
+                  $time_text = date('H:i', strtotime($booking['checkin'])) . ' - ' . date('H:i', strtotime($booking['checkout']));
+                  
+                  if($booking['status'] == 'disetujui'){
+                      $status_class = "booked";
+                      $status_text = "✗ Terpakai";
+                  } else if($booking['status'] == 'pending'){
+                      $status_class = "pending";
+                      $status_text = "⏳ Pending";
+                  } else if($booking['status'] == 'ditolak'){
+                      // If rejected, it's basically available again
+                      $status_class = "available";
+                      $status_text = "✓ Tersedia";
+                  }
+              }
+          ?>
+          <div class="room-slot <?= $status_class; ?>">
+            <div class="slot-name"><?= htmlspecialchars($nama_ruangan); ?></div>
+            <div class="slot-time"><?= $time_text; ?></div>
+            <?= $status_text; ?>
           </div>
-          <div class="room-slot booked">
-            <div class="slot-name">Lab Komputer 1</div>
-            <div class="slot-time">08.00 – 14.00</div>
-            ✗ Terpakai
-          </div>
-          <div class="room-slot pending">
-            <div class="slot-name">Ruang Seminar B</div>
-            <div class="slot-time">13.00 – 16.00</div>
-            ⏳ Pending
-          </div>
-          <div class="room-slot available">
-            <div class="slot-name">Ruang Rapat 3</div>
-            <div class="slot-time">10.00 – 13.00</div>
-            ✓ Tersedia
-          </div>
+          <?php } ?>
         </div>
+        <?php
+        $query_latest_approved = mysqli_query($conn, "
+            SELECT ruangan_nama, checkin, checkout 
+            FROM bookings 
+            WHERE status='disetujui' 
+            ORDER BY created_at DESC 
+            LIMIT 1
+        ");
+        if(mysqli_num_rows($query_latest_approved) > 0){
+            $latest_booking = mysqli_fetch_assoc($query_latest_approved);
+            $ruang = $latest_booking['ruangan_nama'];
+            
+            $hari = array("Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu");
+            $day_index = date('w', strtotime($latest_booking['checkin']));
+            $hari_indo = $hari[$day_index];
+            $jam_mulai = date('H:i', strtotime($latest_booking['checkin']));
+            $jam_selesai = date('H:i', strtotime($latest_booking['checkout']));
+            
+            $teks_t2 = htmlspecialchars($ruang) . ' · ' . $hari_indo . ', ' . $jam_mulai . ' - ' . $jam_selesai;
+        } else {
+            $teks_t2 = "Belum ada booking terbaru";
+        }
+        ?>
         <div class="booking-confirm">
           <div class="confirm-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
           <div class="confirm-text">
-            <div class="t1">Booking Disetujui!</div>
-            <div class="t2">Aula Utama · Senin, 09.00 – 12.00</div>
+            <div class="t1">Booking Terakhir Disetujui</div>
+            <div class="t2"><?= $teks_t2; ?></div>
           </div>
         </div>
       </div>

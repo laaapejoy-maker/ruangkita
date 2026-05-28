@@ -41,7 +41,7 @@ if(isset($_POST['lanjutkan']) && !empty($_POST['data_ruangan'])){
     $_SESSION['ruangan'] = json_decode($_POST['data_ruangan'], true);
 
     if(isset($_SESSION['ruangan']['nama'])){
-        echo "<script>alert('Ruangan dipilih: ".$_SESSION['ruangan']['nama']."'); window.location.href='proses_booking.php';</script>";
+        $swalMessage = "Ruangan dipilih: " . $_SESSION['ruangan']['nama'];
     }
 }
 ?>
@@ -612,6 +612,18 @@ function closeSidebar(){
 
 }
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if(isset($swalMessage)): ?>
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: '<?= $swalMessage ?>',
+        confirmButtonColor: '#3085d6'
+    }).then(() => {
+        window.location.href = 'proses_booking.php';
+    });
+</script>
+<?php endif; ?>
 </body>
 </html>

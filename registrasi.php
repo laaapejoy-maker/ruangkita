@@ -47,8 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                       VALUES ('$nama', '$email', '$passwordHash', '$jurusan', '$angkatan', '$kelas')";
 
             if (mysqli_query($conn, $query)) {
-                header("Location: login.php"); 
-                exit;
+                $message = "Registrasi Berhasil! Silakan login.";
+                $messageType = "success";
             } else {
                 $message = "Terjadi kesalahan!";
                 $messageType = "error";
@@ -73,11 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <h2>Form Registrasi</h2>
 
-    <?php if ($message != ""): ?>
-        <div class="message <?= $messageType ?>">
-            <?= $message ?>
-        </div>
-    <?php endif; ?>
+
 
     <form method="POST">
 
@@ -138,6 +134,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </form>
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if ($message != ""): ?>
+<script>
+    Swal.fire({
+        icon: '<?= $messageType ?>',
+        title: '<?= $messageType === "success" ? "Berhasil!" : "Gagal!" ?>',
+        text: '<?= $message ?>',
+        confirmButtonColor: '#3085d6'
+    }).then((result) => {
+        <?php if ($messageType === "success"): ?>
+            window.location.href = 'login.php';
+        <?php endif; ?>
+    });
+</script>
+<?php endif; ?>
 </body>
 </html>
