@@ -231,7 +231,7 @@ nav{
 }
 
 .logo{
-    display:flex;
+    display:none;
     align-items:center;
     gap:10px;
     text-decoration:none;
@@ -239,6 +239,10 @@ nav{
     font-weight:800;
     font-size:20px;
     line-height:1;
+}
+
+.main-content.full .logo {
+    display: flex;
 }
 
 .logo-icon{

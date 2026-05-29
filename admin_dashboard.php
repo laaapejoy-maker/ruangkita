@@ -959,15 +959,7 @@ td{
 
                     <?php } ?>
                     
-                    <div class="dashboard-welcome">
-                        <img src="img/dashboard.png">
-                        <h2 style="text-align:center;">
-                            Selamat datang di Dashboard
-                        </h2>
-                        <p style="text-align:center;">
-                            Kelola dan pantau penggunaan ruangan dengan mudah.
-                        </p>
-                    </div>
+                    
                 </div>
 
 

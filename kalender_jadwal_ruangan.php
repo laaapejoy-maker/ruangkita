@@ -481,10 +481,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         dateClick: function(info){
-
-            window.location.href =
-            "user_dashboard.php?date=" + info.dateStr;
-
+            calendar.changeView('timeGridDay', info.dateStr);
         }
 
     });

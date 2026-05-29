@@ -126,6 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <button type="submit">Daftar Sekarang</button>
+        <button type="button" style="background: #94a3b8; box-shadow: 0 8px 20px rgba(148, 163, 184, 0.25);" onclick="window.location.href='index.php'">Kembali ke Beranda</button>
           <p style="text-align:center; margin-top:15px;">
             sudah punya akun? 
             <a href="login.php">Kembali Ke Login</a>

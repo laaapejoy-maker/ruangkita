@@ -972,7 +972,7 @@ body {
   height: 100vh;
   margin: 0;
   font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(135deg, #2c2f8f, #ff7a00);
+  background: linear-gradient(120deg, #ffffff, #eef5ff, #dbeafe);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -998,16 +998,18 @@ body {
   background: #f0f0f0;
 }
 .login-page .btn-login {
-  background: linear-gradient(to right, #2c2f8f, #ff7a00);
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
   border: none;
   color: white;
-  font-weight: 600;
-  padding: 10px;
-  border-radius: 8px;
+  font-weight: 700;
+  padding: 13px;
+  border-radius: 14px;
   transition: 0.3s;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
 }
 .login-page .btn-login:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(59, 130, 246, 0.35);
 }
 
 .register-page {
@@ -1176,7 +1178,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(120deg, #0a1f44, #ff7a00);
+  background: linear-gradient(120deg, #ffffff, #eef5ff, #dbeafe);
 }
 .booking-page .main {
   width: 1000px;
@@ -1253,16 +1255,19 @@ body {
 .booking-page .btn {
   margin-top: 15px;
   width: 100%;
-  padding: 12px;
+  padding: 13px;
   border: none;
-  border-radius: 12px;
-  font-weight: 600;
+  border-radius: 14px;
+  font-weight: 700;
   color: white;
   cursor: pointer;
-  background: linear-gradient(135deg, #0a1f44, #ff7a00);
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  transition: 0.3s;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
 }
 .booking-page .btn:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(59, 130, 246, 0.35);
 }
 .booking-page .msg {
   margin-top: 10px;

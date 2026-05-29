@@ -1,4 +1,3 @@
-```php id="5x8q0t"
 <?php
 session_start();
 
@@ -239,6 +238,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <button class="btn" onclick="booking()" id="btnBooking">
             Booking Sekarang
+        </button>
+        <button type="button" class="btn" style="background: #94a3b8; box-shadow: 0 8px 20px rgba(148, 163, 184, 0.25);" onclick="window.location.href='memilih_ruangan.php'">
+            Kembali
         </button>
 
         <div class="msg" id="msg"></div>
