@@ -344,23 +344,45 @@ body{
 .room-item{
     display:flex;
     align-items:center;
-    gap:15px;
-    padding:14px;
-    background:linear-gradient(to right,#f8fbff,#eef5ff);
-    border-radius:20px;
-    margin-bottom:14px;
+    gap:18px;
+    padding:18px;
+    margin-bottom:18px;
+    border-radius:24px;
+    background:linear-gradient(120deg,#eaf4ff,#fff4eb);
+    border:1px solid #edf2f7;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+    transition:0.3s;
+    position:relative;
+    overflow:hidden;
+}
+
+.room-item::before{
+    content:'';
+    position:absolute;
+    left:0;
+    top:0;
+    width:6px;
+    height:100%;
+    background:linear-gradient(180deg,#2563eb,#60a5fa);
+}
+
+.room-item:hover{
+    transform:translateY(-4px);
+    box-shadow:0 15px 30px rgba(37,99,235,0.12);
 }
 
 .room-image{
-    width:60px;
-    height:60px;
-    border-radius:16px;
+    width:65px;
+    height:65px;
+    border-radius:20px;
     background:linear-gradient(135deg,#2563eb,#60a5fa);
     display:flex;
     align-items:center;
     justify-content:center;
     color:white;
-    font-size:24px;
+    font-size:26px;
+    flex-shrink:0;
+    box-shadow:0 10px 20px rgba(37,99,235,0.25);
 }
 
 .room-info{
@@ -368,25 +390,35 @@ body{
 }
 
 .room-info h4{
-    font-size:15px;
-    margin-bottom:4px;
+    font-size:17px;
+    font-weight:800;
+    color:#0f172a;
+    margin-bottom:6px;
 }
 
 .room-info p{
-    font-size:12px;
+    font-size:13px;
     color:#64748b;
 }
 
 .booking-count{
-    background:#2563eb;
+    min-width:55px;
+    height:55px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
     color:white;
-    padding:8px 13px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    font-weight:800;
+    box-shadow:0 10px 20px rgba(37,99,235,0.25);
 }
 
-
+.dashboard-welcome img{
+    width:600px;
+    margin-bottom:20px;
+}
 
 .pending-modern{
     position:relative;
@@ -926,7 +958,16 @@ td{
                     </div>
 
                     <?php } ?>
-
+                    
+                    <div class="dashboard-welcome">
+                        <img src="img/dashboard.png">
+                        <h2 style="text-align:center;">
+                            Selamat datang di Dashboard
+                        </h2>
+                        <p style="text-align:center;">
+                            Kelola dan pantau penggunaan ruangan dengan mudah.
+                        </p>
+                    </div>
                 </div>
 
 
