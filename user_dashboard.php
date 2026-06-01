@@ -668,24 +668,7 @@ footer{
 
     <div class="main-content">
 
-        <nav>
-            <div class="nav-inner">
-
-                <a href="#" class="logo">
-                    <div class="logo-icon">
-                        <img src="img/logo.png" alt="Logo">
-                    </div>
-                    RuangKita
-                </a>
-
-                <ul class="nav-links">
-                    <li><a href="user_dashboard.php" style="color: #2563eb;">Dashboard</a></li>
-                    <li><a href="memilih_ruangan.php">Booking Ruangan</a></li>
-                    <li><a href="kalender_jadwal_ruangan.php">Kalender</a></li>
-                </ul>
-
-            </div>
-        </nav>
+       
 
         <section class="dashboard-overview">
             <div class="hero-badge" style="margin-bottom: 20px;">
