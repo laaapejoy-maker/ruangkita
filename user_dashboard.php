@@ -6,6 +6,8 @@ if (!isset($_SESSION['login'])) {
     exit;
 }
 
+include "koneksi.php";
+
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 
@@ -409,6 +411,193 @@ footer{
     }
 }
 
+/* Dashboard Overview */
+.dashboard-overview {
+    padding: 40px 40px 20px 70px;
+    transition: 0.3s ease;
+}
+.main-content.full .dashboard-overview {
+    padding-left: 90px;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.stat-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+.stat-info h3 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 4px;
+}
+.stat-info p {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Booking Grid */
+.booking-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    padding-bottom: 40px;
+}
+.booking-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+.booking-card:hover {
+    transform: translateY(-5px);
+    border-color: #cbd5e1;
+    box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
+}
+.bc-header {
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.bc-room {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.bc-icon {
+    width: 40px;
+    height: 40px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    font-size: 20px;
+}
+.bc-room h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+.bc-badge {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.status-approved { background: #dcfce7; color: #166534; }
+.status-pending { background: #fef9c3; color: #854d0e; }
+.status-rejected { background: #fee2e2; color: #991b1b; }
+
+.bc-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.bc-detail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+}
+.bc-detail i {
+    color: #94a3b8;
+    font-size: 18px;
+}
+.bc-purpose {
+    margin-top: 8px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #334155;
+    line-height: 1.5;
+}
+.bc-purpose strong {
+    display: block;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+.bc-footer {
+    padding: 16px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    margin-bottom: 40px;
+}
+.empty-state h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 10px;
+}
+.empty-state p {
+    color: #64748b;
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+@media(max-width:900px){
+    .dashboard-overview {
+        padding: 40px 24px 20px 24px !important;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -490,48 +679,135 @@ footer{
                 </a>
 
                 <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#fitur">Fitur</a></li>
-                    <li><a href="#tentang">Tentang</a></li>
-                    <li><a href="#kontak">Kontak</a></li>
+                    <li><a href="user_dashboard.php" style="color: #2563eb;">Dashboard</a></li>
+                    <li><a href="memilih_ruangan.php">Booking Ruangan</a></li>
+                    <li><a href="kalender_jadwal_ruangan.php">Kalender</a></li>
                 </ul>
 
             </div>
         </nav>
 
-        <section id="home">
-            <div class="hero">
-                <div class="hero-content">
-
-                    <div class="hero-badge">
-                        <span class="dot"></span>
-                        Sistem Informasi Kampus
+        <section class="dashboard-overview">
+            <div class="hero-badge" style="margin-bottom: 20px;">
+                <span class="dot"></span>
+                Dashboard Mahasiswa
+            </div>
+            <h1 style="font-size: 32px; font-weight: 800; color: #111827; margin-bottom: 10px;">Status Booking Ruangan Anda</h1>
+            <p style="color: #6b7280; font-size: 16px; margin-bottom: 30px;">Pantau status persetujuan, jadwal, dan riwayat peminjaman ruang kampus Anda di sini.</p>
+            
+            <?php
+            $email = $_SESSION['email'] ?? '';
+            $nama = $_SESSION['nama'] ?? '';
+            $email = mysqli_real_escape_string($conn, $email);
+            $nama = mysqli_real_escape_string($conn, $nama);
+            
+            // Mengambil data booking user ini
+            $query_bookings = mysqli_query($conn, "SELECT * FROM bookings WHERE email = '$email' OR nama = '$nama' ORDER BY created_at DESC");
+            $total_bookings = mysqli_num_rows($query_bookings);
+            
+            $approved_count = 0;
+            $pending_count = 0;
+            $rejected_count = 0;
+            $bookings = [];
+            
+            while ($row = mysqli_fetch_assoc($query_bookings)) {
+                $bookings[] = $row;
+                if ($row['status'] == 'disetujui') $approved_count++;
+                elseif ($row['status'] == 'pending') $pending_count++;
+                elseif ($row['status'] == 'ditolak') $rejected_count++;
+            }
+            ?>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #eff6ff; color: #2563eb;"><i class="ri-calendar-check-fill"></i></div>
+                    <div class="stat-info">
+                        <h3><?= $total_bookings; ?></h3>
+                        <p>Total Booking</p>
                     </div>
-
-                    <h1>
-                        Solusi Booking Ruang Kampus yang
-                        <span>Mudah</span> dan
-                        <em>Cepat</em>
-                    </h1>
-
-                    <p>
-                        RuangKita memudahkan seluruh civitas akademika
-                        dalam mengajukan, mengelola, dan memantau
-                        peminjaman ruang kampus secara online.
-                    </p>
-
-                    <div class="hero-cta">
-                        <a href="memilih_ruangan.php" class="btn-primary">
-                            Mulai Booking
-                        </a>
-
-                        <a href="#fitur" class="btn-outline">
-                            Pelajari Lebih Lanjut
-                        </a>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ecfdf5; color: #10b981;"><i class="ri-checkbox-circle-fill"></i></div>
+                    <div class="stat-info">
+                        <h3><?= $approved_count; ?></h3>
+                        <p>Disetujui</p>
                     </div>
-
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fffbeb; color: #f59e0b;"><i class="ri-time-fill"></i></div>
+                    <div class="stat-info">
+                        <h3><?= $pending_count; ?></h3>
+                        <p>Menunggu</p>
+                    </div>
                 </div>
             </div>
+
+            <div class="booking-list-header" style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; margin-bottom: 20px;">
+                <h2 style="font-size: 20px; font-weight: 700; color: #111827;">Riwayat & Status Booking</h2>
+                <a href="memilih_ruangan.php" class="btn-primary" style="padding: 10px 20px; font-size: 14px; border-radius: 10px;"><i class="ri-add-line"></i> Booking Baru</a>
+            </div>
+
+            <?php if ($total_bookings > 0): ?>
+            <div class="booking-grid">
+                <?php foreach ($bookings as $b): 
+                    $status_class = '';
+                    $status_text = '';
+                    $status_icon = '';
+                    if ($b['status'] == 'disetujui') {
+                        $status_class = 'status-approved';
+                        $status_text = 'Disetujui';
+                        $status_icon = 'ri-check-line';
+                    } elseif ($b['status'] == 'pending') {
+                        $status_class = 'status-pending';
+                        $status_text = 'Menunggu';
+                        $status_icon = 'ri-time-line';
+                    } elseif ($b['status'] == 'ditolak') {
+                        $status_class = 'status-rejected';
+                        $status_text = 'Ditolak';
+                        $status_icon = 'ri-close-line';
+                    }
+                    
+                    $checkin_date = date('d M Y', strtotime($b['checkin']));
+                    $checkin_time = date('H:i', strtotime($b['checkin']));
+                    $checkout_time = date('H:i', strtotime($b['checkout']));
+                ?>
+                <div class="booking-card">
+                    <div class="bc-header">
+                        <div class="bc-room">
+                            <div class="bc-icon"><i class="ri-building-4-fill"></i></div>
+                            <h4><?= htmlspecialchars($b['ruangan_nama']); ?></h4>
+                        </div>
+                        <div class="bc-badge <?= $status_class; ?>">
+                            <i class="<?= $status_icon; ?>"></i> <?= $status_text; ?>
+                        </div>
+                    </div>
+                    <div class="bc-body">
+                        <div class="bc-detail">
+                            <i class="ri-calendar-event-fill"></i>
+                            <span><?= $checkin_date; ?></span>
+                        </div>
+                        <div class="bc-detail">
+                            <i class="ri-time-fill"></i>
+                            <span><?= $checkin_time; ?> - <?= $checkout_time; ?> WIB</span>
+                        </div>
+                        <div class="bc-purpose">
+                            <strong>Keperluan:</strong> <?= htmlspecialchars($b['keperluan_booking']); ?>
+                        </div>
+                    </div>
+                    <div class="bc-footer">
+                        Diajukan pada <?= date('d M Y, H:i', strtotime($b['created_at'])); ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php else: ?>
+            <div class="empty-state">
+                <img src="https://illustrations.popsy.co/blue/surreal-hourglass.svg" alt="No Bookings" style="width: 200px; margin-bottom: 20px;">
+                <h3>Belum ada riwayat booking</h3>
+                <p>Anda belum pernah mengajukan peminjaman ruangan. Mulai booking ruangan pertama Anda sekarang!</p>
+                <a href="memilih_ruangan.php" class="btn-primary" style="margin-top: 20px; display: inline-block;">Pilih Ruangan</a>
+            </div>
+            <?php endif; ?>
         </section>
 
         <footer>

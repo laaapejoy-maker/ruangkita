@@ -282,6 +282,21 @@ body{
     float:right;
 }
 
+.sidebar-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.35);
+    z-index:998;
+    opacity:0;
+    visibility:hidden;
+    transition:0.3s;
+}
+
+.sidebar-overlay.active{
+    opacity:1;
+    visibility:visible;
+}
+
 @media(max-width:900px){
 
     .sidebar{
@@ -303,6 +318,8 @@ body{
         onclick="toggleSidebar()">
   ☰
 </button>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
 <div class="sidebar" id="sidebar">
 
@@ -401,13 +418,40 @@ body{
 
 const sidebar = document.getElementById('sidebar');
 const main = document.getElementById('main');
+const overlay = document.getElementById('sidebarOverlay');
+
+// Auto-close sidebar on mobile
+if (window.innerWidth <= 900) {
+    sidebar.classList.add('closed');
+    main.classList.add('full');
+}
 
 function toggleSidebar(){
-
     sidebar.classList.toggle('closed');
     main.classList.toggle('full');
 
+    if (window.innerWidth <= 900) {
+        overlay.classList.toggle('active');
+    }
 }
+
+function closeSidebar(){
+    sidebar.classList.add('closed');
+    main.classList.add('full');
+    overlay.classList.remove('active');
+}
+
+window.addEventListener('resize', function(){
+    if (window.innerWidth > 900) {
+        sidebar.classList.remove('closed');
+        main.classList.remove('full');
+        overlay.classList.remove('active');
+    } else {
+        sidebar.classList.add('closed');
+        main.classList.add('full');
+        overlay.classList.remove('active');
+    }
+});
 
 setInterval(()=>{
 

@@ -398,9 +398,17 @@ body{
     font-weight:500;
 }
 
+.main-content.full{
+    margin-left:0;
+}
+
 @media(max-width:900px){
     .sidebar{
         width:280px;
+    }
+
+    .main-content{
+        margin-left:0;
     }
 }
 </style>
@@ -599,18 +607,40 @@ function pilihRuangan(el, data){
 
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebarOverlay');
+const mainContent = document.querySelector('.main-content');
 
-function toggleSidebar(){
-
-  sidebar.classList.toggle('closed');
-
+// Tutup sidebar otomatis di layar kecil saat pertama load
+if (window.innerWidth <= 900) {
+    sidebar.classList.add('closed');
+    mainContent.classList.add('full');
 }
 
-function closeSidebar(){
+function toggleSidebar() {
+    sidebar.classList.toggle('closed');
+    mainContent.classList.toggle('full');
 
-  sidebar.classList.add('closed');
-
+    if (window.innerWidth <= 900) {
+        overlay.classList.toggle('active');
+    }
 }
+
+function closeSidebar() {
+    sidebar.classList.add('closed');
+    mainContent.classList.add('full');
+    overlay.classList.remove('active');
+}
+
+window.addEventListener('resize', function () {
+    if (window.innerWidth > 900) {
+        sidebar.classList.remove('closed');
+        mainContent.classList.remove('full');
+        overlay.classList.remove('active');
+    } else {
+        sidebar.classList.add('closed');
+        mainContent.classList.add('full');
+        overlay.classList.remove('active');
+    }
+});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php if(isset($swalMessage)): ?>
