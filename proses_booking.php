@@ -12,9 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $mode = $_POST['mode'] ?? '';
 
-    $nama = trim($_POST['nama'] ?? '');
+    $nama = trim($_SESSION['nama'] ?? '');
     $prodi = trim($_POST['prodi'] ?? '');
-    $email = trim($_POST['email'] ?? '');
+    $email = trim($_SESSION['email'] ?? '');
     $angkatan = trim($_POST['angkatan'] ?? '');
     $kelas = trim($_POST['kelas'] ?? '');
     $keperluan = trim($_POST['keperluan_booking'] ?? '');
@@ -165,6 +165,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+.swal-booking-success {
+    border-radius: 24px !important;
+    padding: 24px !important;
+}
+
+.swal2-popup.swal-booking-success .swal2-icon.swal2-success {
+    border-color: #22c55e;
+    color: #22c55e;
+}
+
+.swal2-popup.swal-booking-success .swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: #22c55e;
+}
+
+.swal2-popup.swal-booking-success .swal2-icon.swal2-success .swal2-success-ring {
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.swal2-timer-progress-bar {
+    background: linear-gradient(90deg, #2563eb, #7c3aed) !important;
+}
+</style>
 
 </head>
 
@@ -186,7 +211,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="full">
                 <label>Nama Lengkap</label>
-                <input type="text" id="nama">
+                <input type="text" id="nama" value="<?= htmlspecialchars($_SESSION['nama'] ?? ''); ?>" readonly style="background:#f1f5f9; cursor:not-allowed;">
             </div>
 
             <div>
@@ -196,7 +221,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div>
                 <label>Email</label>
-                <input type="email" id="email">
+                <input type="email" id="email" value="<?= htmlspecialchars($_SESSION['email'] ?? ''); ?>" readonly style="background:#f1f5f9; cursor:not-allowed;">
             </div>
 
             <div>
@@ -384,14 +409,64 @@ function booking(){
 
         if(res === "sukses"){
 
-            msg.innerHTML = "✔ Booking berhasil";
-            msg.style.color = "#ff7a00";
+            msg.innerHTML = "";
+
+            Swal.fire({
+                icon: 'success',
+                title: '🎉 Booking Berhasil!',
+                html: `
+                    <div style="text-align:center;">
+                        <p style="font-size:16px; color:#475569; margin-bottom:8px;">
+                            Ruangan berhasil dibooking!
+                        </p>
+                        <div style="
+                            background: linear-gradient(135deg, #dbeafe, #ede9fe);
+                            border-radius: 16px;
+                            padding: 16px 20px;
+                            margin: 12px 0;
+                            border: 1px solid #c7d2fe;
+                        ">
+                            <p style="margin:0; font-size:14px; color:#6366f1; font-weight:700;">
+                                📋 Status: <span style="color:#f59e0b;">Menunggu Persetujuan</span>
+                            </p>
+                        </div>
+                        <p style="font-size:13px; color:#94a3b8; margin-top:8px;">
+                            Anda akan diarahkan ke Dashboard...
+                        </p>
+                    </div>
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Ke Dashboard',
+                confirmButtonColor: '#2563eb',
+                timer: 5000,
+                timerProgressBar: true,
+                allowOutsideClick: false,
+                customClass: {
+                    popup: 'swal-booking-success'
+                }
+            }).then(() => {
+                window.location.href = 'user_dashboard.php';
+            });
+
+        }
+        else if(res === "kosong"){
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Data Belum Lengkap',
+                text: 'Mohon lengkapi semua field sebelum booking.',
+                confirmButtonColor: '#f59e0b'
+            });
 
         }
         else{
 
-            msg.innerHTML = "❌ Gagal booking";
-            msg.style.color = "red";
+            Swal.fire({
+                icon: 'error',
+                title: 'Booking Gagal',
+                text: 'Terjadi kesalahan saat memproses booking. Silakan coba lagi.',
+                confirmButtonColor: '#ef4444'
+            });
 
         }
 
@@ -400,7 +475,6 @@ function booking(){
 }
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
 
